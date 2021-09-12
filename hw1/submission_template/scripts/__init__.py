@@ -2,17 +2,17 @@ import pandas as pd
 import os
 
 init_dataset = pd.read_csv(os.path.join(os.getcwd(), 'data\\IRAhandle_tweets_1.csv'))
-filtered_dataset = init_dataset[:10000]
+init_dataset = init_dataset[:10000]
 # language is English and content contains a '?'
-filtered_dataset = filtered_dataset[
-    (filtered_dataset.language == 'English') & (~(filtered_dataset.content.str.contains('\?+', regex=True)))]
+filtered_dataset = init_dataset[
+    (init_dataset.language == 'English') & (~(init_dataset.content.str.contains('\?+', regex=True)))]
 
 # add "trump_mention" feature
 # must match a single word 'Trump'
 trump_mention = list(filtered_dataset.content.str.contains('[\s, \W]+Trump[\s, \W]+'))
 c = trump_mention.count(True)
 trump_mention = ['T' if v else 'F' for v in trump_mention]
-filtered_dataset['trump_mention'] = trump_mention
+filtered_dataset.loc[:, 'trump_mention'] = trump_mention
 # number of tweets that mention Trump
 print('Number of tweets that mention Trump: %d' % c)
 filtered_dataset.to_csv(path_or_buf=os.path.join(os.getcwd(), 'dataset.tsv'),
